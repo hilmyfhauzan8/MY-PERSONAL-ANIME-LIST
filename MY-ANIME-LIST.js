@@ -18,7 +18,7 @@ function saveAnime() {
   const releaseDateBegin = rawData[18][0]; //E23
   const releaseDateEnd = rawData[20][0]; //E25
   const epsCount = rawData[22][0]; //E27
-  const durationPerMinute = rawData[24][0]; //E29
+  const durationPerEpisode = rawData[24][0]; //E29
   const genre = rawData[26][0]; //E31
   const demographic = rawData[28][0]; //E33
   const rating = rawData[30][0]; //E35
@@ -41,7 +41,7 @@ function saveAnime() {
   
   contentRRangeMAL1.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL]]);
   contentRRangeMAL2.setValues([[type,source,studios,premiered,releaseDateBegin,releaseDateEnd]]);
-  contentRRangeMAL3.setValues([[epsCount,durationPerMinute,genre,demographic,rating,score,watchStatus,progress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
+  contentRRangeMAL3.setValues([[epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,progress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
 
   const rangeSorting = shtMAL.getRange('B3:AB' + row);
   rangeSorting.sort({column: 2, ascending: true});
@@ -79,8 +79,6 @@ function clearMALEfficiently() {
 // =================================================================================================================================================
 
 function searchAnimeInfo() {
-  const Sheet = SpreadsheetApp.getActiveSpreadsheet();
-  const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
   
   // 1. Ambil Judul dari E5
   const query = shtInputMAL.getRange('E5').getValue();
@@ -108,39 +106,44 @@ function searchAnimeInfo() {
       Browser.msgBox("Anime tidak ditemukan!");
       return;
     }
+
     const anime = json.data[0];
-    const titleJapanese = anime.title_japanese || "-";
-    const titleEnglish = anime.title_english || "-";
-    const titleSynonym = anime.title_synonyms || "-";
-    const image = anime.images.jpg.image_url || "-";
-    const type = anime.type || "-";
-    const source = anime.source || "-";
-    const studios = anime.studios.map(s => s.name).join(', ') || "-";
-    const premiered = (anime.season && anime.year) ? 
+    const animeTitleJapaneseAI = anime.title_japanese || "-";
+    const animeTitleEnglishAI = anime.title_english || "-";
+    const animeTitleSynonymAI = anime.title_synonyms || "-";
+    const imageURLAI = anime.images.jpg.image_url || "-";
+    const typeAI = anime.type || "-";
+    const sourceAI = anime.source || "-";
+    const studiosAI = anime.studios.map(s => s.name).join(', ') || "-";
+    const premieredAI = (anime.season && anime.year) ? 
                       (anime.season.charAt(0).toUpperCase() + anime.season.slice(1) + " " + anime.year) : "-";
-    const dateBegin = anime.aired.from ? new Date(anime.aired.from) : "";
-    const dateEnd = anime.aired.to ? new Date(anime.aired.to) : "";
-    const epsCount = anime.episodes || "?";
-    const duration = anime.duration || "-";
+    const releaseDateBeginAI = anime.aired.from ? new Date(anime.aired.from) : "";
+    const releaseDateEndAI = anime.aired.to ? new Date(anime.aired.to) : "";
+    const epsCountAI = anime.episodes || "?";
+    const durationPerEpisodeAI = anime.duration || "-";
     const genresList = anime.genres.map(g => g.name);
     const themesList = anime.themes.map(t => t.name);
-    const fullGenre = [...genresList, ...themesList].join(', ');
-    const demographics = anime.demographics.map(d => d.name).join(', ') || "-";
+    const genreAI = [...genresList, ...themesList].join(', ');
+    const demographicsAI = anime.demographics.map(d => d.name).join(', ') || "-";
+    const ratingAI = anime.rating || "-";
+    const scoreAI = anime.score || "-";
 
-    shtInputMAL.getRange('E7').setValue(titleJapanese);
-    shtInputMAL.getRange('E9').setValue(titleEnglish);
-    shtInputMAL.getRange('E11').setValue(titleSynonym);
-    shtInputMAL.getRange('E13').setValue(image);
-    shtInputMAL.getRange('E7').setValue(type);
-    shtInputMAL.getRange('E9').setValue(source);
-    shtInputMAL.getRange('E11').setValue(studios);
-    shtInputMAL.getRange('E13').setValue(premiered);
-    if (dateBegin) {shtInputMAL.getRange('E15').setValue(dateBegin);}
-    if (dateEnd) {shtInputMAL.getRange('E17').setValue(dateEnd);}
-    shtInputMAL.getRange('E19').setValue(epsCount);
-    shtInputMAL.getRange('E21').setValue(duration);
-    shtInputMAL.getRange('E23').setValue(fullGenre);
-    shtInputMAL.getRange('E25').setValue(demographics);
+    shtInputMAL.getRange('E7').setValue(animeTitleJapaneseAI);
+    shtInputMAL.getRange('E9').setValue(animeTitleEnglishAI);
+    shtInputMAL.getRange('E11').setValue(animeTitleSynonymAI);
+    shtInputMAL.getRange('E13').setValue(imageURLAI);
+    shtInputMAL.getRange('E15').setValue(typeAI);
+    shtInputMAL.getRange('E17').setValue(sourceAI);
+    shtInputMAL.getRange('E19').setValue(studiosAI);
+    shtInputMAL.getRange('E21').setValue(premieredAI);
+    if (releaseDateBeginAI) {shtInputMAL.getRange('E23').setValue(releaseDateBeginAI);}
+    if (releaseDateEndAI) {shtInputMAL.getRange('E25').setValue(releaseDateEndAI);}
+    shtInputMAL.getRange('E27').setValue(epsCountAI);
+    shtInputMAL.getRange('E29').setValue(durationPerEpisodeAI);
+    shtInputMAL.getRange('E31').setValue(genreAI);
+    shtInputMAL.getRange('E33').setValue(demographicsAI);
+    shtInputMAL.getRange('E35').setValue(ratingAI);
+    shtInputMAL.getRange('E37').setValue(scoreAI);
     
     Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
 
