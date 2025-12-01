@@ -1,5 +1,5 @@
 const Sheet = SpreadsheetApp.getActiveSpreadsheet();
-const shtInputMAL = Sheet.getSheetByName('Input');
+const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
 const shtMAL = Sheet.getSheetByName('MY ANIME LIST');
 
 function saveAnime() {
@@ -26,15 +26,16 @@ function saveAnime() {
   const opensong = rawData[34][0]; //E39
   const endsong = rawData[36][0]; //E42
 
-  let row = shtMAL.getRange('O3').getValue();
+  let row = shtMAL.getRange('V3').getValue();
   row += 3;
-  const MALContentRange1 = shtMAL.getRange('B' + row + ':H'+ row);
-  const MALContentRange2 = shtMAL.getRange('J' + row + ':U'+ row);
-  
-  MALContentRange1.setValues([[animeTitle,type, source, studios, premiered, releaseDateBegin, releaseDateEnd]]);
-  MALContentRange2.setValues([[epsCount,durationPerMinute, genre, demographic, watchStatus, progress, personalRating, legalIllegal, platform, description, opensong, endsong]]);
 
-  const rangeSorting = shtMAL.getRange('B3:N' + row);
+  const ccontentRRangeMAL1 = shtMAL.getRange('B' + row + ':H' + row);
+  const ccontentRRangeMAL2 = shtMAL.getRange('J' + row + ':U' + row);
+  
+  ccontentRRangeMAL1.setValues([[animeTitle,type,source,studios,premiered,releaseDateBegin,releaseDateEnd]]);
+  ccontentRRangeMAL2.setValues([[epsCount,durationPerMinute,genre,demographic,watchStatus,progress,personalRating,legalIllegal,platform,description,opensong,endsong]]);
+
+  const rangeSorting = shtMAL.getRange('B3:U' + row);
   rangeSorting.sort({column: 2, ascending: true});
 
   clearMAL();
@@ -43,4 +44,5 @@ function saveAnime() {
 function clearMAL() {
   let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41'];
   shtInputMAL.getRangeList(cellsToClear).clearContent();
+  shtInputMAL.getRange('E21').setValue('23 min.');
 };
