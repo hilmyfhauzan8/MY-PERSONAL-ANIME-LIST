@@ -4,7 +4,7 @@ const shtMAL = Sheet.getSheetByName('MY ANIME LIST');
 
 function saveAnime() {
 
-  const rawData = shtInputMAL.getRange('E5:E41').getValues();
+  const rawData = shtInputMAL.getRange('E5:E53').getValues();
 
   const animeTitle = rawData[0][0]; //E5
   const animeTitleJapanese = rawData[2][0]; //E7
@@ -51,29 +51,32 @@ function saveAnime() {
 
 
 function saveAnimeEfficiently() {
-  const rawData = shtInputMAL.getRange('E5:E41').getValues();
+  const rawData = shtInputMAL.getRange('E5:E53').getValues();
+  
+  const contentRRangeMAL1 = shtMAL.getRange('B' + row + ':F' + row);
+  const contentRRangeMAL2 = shtMAL.getRange('H' + row + ':M' + row);
+  const contentRRangeMAL3 = shtMAL.getRange('O' + row + ':AB' + row);
 
   contentRRangeMAL1.setValues([[rawData[0][0],rawData[2][0],rawData[4][0],rawData[6][0],rawData[8][0]]]);
   contentRRangeMAL2.setValues([[rawData[10][0],rawData[12][0],rawData[14][0],rawData[16][0],rawData[18][0],rawData[20][0]]]);
   contentRRangeMAL3.setValues([[rawData[22][0],rawData[24][0],rawData[26][0],rawData[28][0],rawData[30][0],rawData[32][0],rawData[34][0],rawData[36][0],rawData[38][0],rawData[40][0],rawData[42][0],rawData[44][0],rawData[46][0],rawData[48][0]]]);
 
-  const rangeSorting = shtMAL.getRange('B3:AB' + row);
-  rangeSorting.sort({column: 2, ascending: true});
+  shtMAL.getRange('B3:AB' + row).sort({column: 2, ascending: true});
 
-  clearMAL();
+  clearMALEfficiently();
 };
 
 // =================================================================================================================================================
 
 function clearMAL() {
-  let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', '43', '45', '47', '49', '51', '53'];
+  let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53'];
   shtInputMAL.getRangeList(cellsToClear).clearContent();
   // shtInputMAL.getRange('E29').setValue('23 min per ep');
 };
 
 
 function clearMALEfficiently() {
-  shtInputMAL.getRangeList(['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', '43', '45', '47', '49', '51', '53']).clearContent();
+  shtInputMAL.getRangeList(['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53']).clearContent();
 };
 
 // =================================================================================================================================================
