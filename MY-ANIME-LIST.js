@@ -3,7 +3,7 @@ const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
 const shtMAL = Sheet.getSheetByName('MY ANIME LIST');
 
 function saveAnime() {
-  
+
   const rawData = shtInputMAL.getRange('E5:E41').getValues();
 
   const animeTitle = rawData[0][0]; //E5
@@ -50,7 +50,7 @@ function saveAnime() {
 };
 
 
-function saveAnimeEfficient() {
+function saveAnimeEfficiently() {
   const rawData = shtInputMAL.getRange('E5:E41').getValues();
 
   contentRRangeMAL1.setValues([[rawData[0][0],rawData[2][0],rawData[4][0],rawData[6][0],rawData[8][0]]]);
@@ -63,81 +63,88 @@ function saveAnimeEfficient() {
   clearMAL();
 };
 
+// =================================================================================================================================================
 
-// function clearMAL() {
-//   let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41'];
-//   shtInputMAL.getRangeList(cellsToClear).clearContent();
-//   shtInputMAL.getRange('E21').setValue('23 min.');
-// };
+function clearMAL() {
+  let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', '43', '45', '47', '49', '51', '53'];
+  shtInputMAL.getRangeList(cellsToClear).clearContent();
+  // shtInputMAL.getRange('E29').setValue('23 min per ep');
+};
 
 
-// function searchAnimeInfo() {
-//   const Sheet = SpreadsheetApp.getActiveSpreadsheet();
-//   const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
+function clearMALEfficiently() {
+  shtInputMAL.getRangeList(['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', '43', '45', '47', '49', '51', '53']).clearContent();
+};
+
+// =================================================================================================================================================
+
+function searchAnimeInfo() {
+  const Sheet = SpreadsheetApp.getActiveSpreadsheet();
+  const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
   
-//   // 1. Ambil Judul dari E5
-//   const query = shtInputMAL.getRange('E5').getValue();
+  // 1. Ambil Judul dari E5
+  const query = shtInputMAL.getRange('E5').getValue();
   
-//   // Error Handling jika belum memasukkan judul anime
-//   if (query === "") {
-//     Browser.msgBox("Silakan masukkan Judul Anime terlebih dahulu.");
-//     return;
-//   }
+  // Error Handling jika belum memasukkan judul anime
+  if (query === "") {
+    Browser.msgBox("Silakan masukkan Judul Anime terlebih dahulu.");
+    return;
+  }
 
-//   // 2. Siapkan URL untuk request ke Jikan API
-//   // encodeURIComponent memastikan judul yang ada spasi/simbol aman untuk URL
-//   const url = 'https://api.jikan.moe/v4/anime?q=' + encodeURIComponent(query) + '&limit=1';
+  // 2. Siapkan URL untuk request ke Jikan API
+  // encodeURIComponent memastikan judul yang ada spasi/simbol aman untuk URL
+  const url = 'https://api.jikan.moe/v4/anime?q=' + encodeURIComponent(query) + '&limit=1';
 
-//   try {
-//     // 3. Panggil API (Fetch)
+  try {
+    // 3. Panggil API (Fetch)
 
-//     // const response = UrlFetchApp.fetch(url);
-//     // const json = JSON.parse(response.getContentText());
+    // const response = UrlFetchApp.fetch(url);
+    // const json = JSON.parse(response.getContentText());
 
-//     const json = JSON.parse(UrlFetchApp.fetch(url).getContentText());
+    const json = JSON.parse(UrlFetchApp.fetch(url).getContentText());
 
-//     // Cek apakah ada hasil
-//     if (!json.data || json.data.length === 0) {
-//       Browser.msgBox("Anime tidak ditemukan!");
-//       return;
-//     }
-//     const anime = json.data[0];
-//     const titleJapanese = anime.title_japanese || "-";
-//     const titleEnglish = anime.title_english || "-";
-//     const titleSynonym = anime.title_synonyms || "-";
-//     const image = anime.images.jpg.image_url || "-";
-//     const type = anime.type || "-";
-//     const source = anime.source || "-";
-//     const studios = anime.studios.map(s => s.name).join(', ') || "-";
-//     const premiered = (anime.season && anime.year) ? 
-//                       (anime.season.charAt(0).toUpperCase() + anime.season.slice(1) + " " + anime.year) : "-";
-//     const dateBegin = anime.aired.from ? new Date(anime.aired.from) : "";
-//     const dateEnd = anime.aired.to ? new Date(anime.aired.to) : "";
-//     const epsCount = anime.episodes || "?";
-//     const duration = anime.duration || "-";
-//     const genresList = anime.genres.map(g => g.name);
-//     const themesList = anime.themes.map(t => t.name);
-//     const fullGenre = [...genresList, ...themesList].join(', ');
-//     const demographics = anime.demographics.map(d => d.name).join(', ') || "-";
+    // Cek apakah ada hasil
+    if (!json.data || json.data.length === 0) {
+      Browser.msgBox("Anime tidak ditemukan!");
+      return;
+    }
+    const anime = json.data[0];
+    const titleJapanese = anime.title_japanese || "-";
+    const titleEnglish = anime.title_english || "-";
+    const titleSynonym = anime.title_synonyms || "-";
+    const image = anime.images.jpg.image_url || "-";
+    const type = anime.type || "-";
+    const source = anime.source || "-";
+    const studios = anime.studios.map(s => s.name).join(', ') || "-";
+    const premiered = (anime.season && anime.year) ? 
+                      (anime.season.charAt(0).toUpperCase() + anime.season.slice(1) + " " + anime.year) : "-";
+    const dateBegin = anime.aired.from ? new Date(anime.aired.from) : "";
+    const dateEnd = anime.aired.to ? new Date(anime.aired.to) : "";
+    const epsCount = anime.episodes || "?";
+    const duration = anime.duration || "-";
+    const genresList = anime.genres.map(g => g.name);
+    const themesList = anime.themes.map(t => t.name);
+    const fullGenre = [...genresList, ...themesList].join(', ');
+    const demographics = anime.demographics.map(d => d.name).join(', ') || "-";
 
-//     shtInputMAL.getRange('E7').setValue(titleJapanese);
-//     shtInputMAL.getRange('E9').setValue(titleEnglish);
-//     shtInputMAL.getRange('E11').setValue(titleSynonym);
-//     shtInputMAL.getRange('E13').setValue(image);
-//     shtInputMAL.getRange('E7').setValue(type);
-//     shtInputMAL.getRange('E9').setValue(source);
-//     shtInputMAL.getRange('E11').setValue(studios);
-//     shtInputMAL.getRange('E13').setValue(premiered);
-//     if (dateBegin) {shtInputMAL.getRange('E15').setValue(dateBegin);}
-//     if (dateEnd) {shtInputMAL.getRange('E17').setValue(dateEnd);}
-//     shtInputMAL.getRange('E19').setValue(epsCount);
-//     shtInputMAL.getRange('E21').setValue(duration);
-//     shtInputMAL.getRange('E23').setValue(fullGenre);
-//     shtInputMAL.getRange('E25').setValue(demographics);
+    shtInputMAL.getRange('E7').setValue(titleJapanese);
+    shtInputMAL.getRange('E9').setValue(titleEnglish);
+    shtInputMAL.getRange('E11').setValue(titleSynonym);
+    shtInputMAL.getRange('E13').setValue(image);
+    shtInputMAL.getRange('E7').setValue(type);
+    shtInputMAL.getRange('E9').setValue(source);
+    shtInputMAL.getRange('E11').setValue(studios);
+    shtInputMAL.getRange('E13').setValue(premiered);
+    if (dateBegin) {shtInputMAL.getRange('E15').setValue(dateBegin);}
+    if (dateEnd) {shtInputMAL.getRange('E17').setValue(dateEnd);}
+    shtInputMAL.getRange('E19').setValue(epsCount);
+    shtInputMAL.getRange('E21').setValue(duration);
+    shtInputMAL.getRange('E23').setValue(fullGenre);
+    shtInputMAL.getRange('E25').setValue(demographics);
     
-//     Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
+    Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
 
-//   } catch (error) {
-//     Browser.msgBox("Error mengambil data: " + error.toString());
-//   }
-// }
+  } catch (error) {
+    Browser.msgBox("Error mengambil data: " + error.toString());
+  }
+}
