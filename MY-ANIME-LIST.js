@@ -41,9 +41,14 @@ function saveAnime() {
 
   const contentRRangeMAL = shtMAL.getRange('B' + row + ':AB' + row);
   contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,formulaProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
-
+  
   const rangeSorting = shtMAL.getRange('B3:AB' + row);
   rangeSorting.sort({column: 2, ascending: true});
+
+  const finder = shtMAL.getRange("B3:B" + row).createTextFinder(animeTitle).matchEntireCell(true);
+  const result = finder.findNext();
+
+  if (result) {shtMAL.setRowHeight(result.getRow(), 350)};
 
   clearMAL();
 };
@@ -125,7 +130,7 @@ function searchAnimeInfo() {
       shtInputMAL.getRange('E33').clearContent();
     }
     
-    Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
+    // Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
 
   } catch (error) {
     Browser.msgBox("Error mengambil data: " + error.toString());
