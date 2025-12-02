@@ -24,24 +24,23 @@ function saveAnime() {
   const rating = rawData[30][0]; //E35
   const score = rawData[32][0]; //E37
   const watchStatus = rawData[34][0]; //E39
-  const progress = rawData[36][0]; //E41
+  // const progress = rawData[36][0]; //E41
   const personalScore = rawData[38][0]; //E43
   const legalIllegal = rawData[40][0]; //E45
   const platform = rawData[42][0]; //E47
   const description = rawData[44][0]; //E49
   const opensong = rawData[46][0]; //E51
   const endsong = rawData[48][0]; //E53
-
+  
   let row = shtMAL.getRange('AC3').getValue();
   row += 3;
 
-  const contentRRangeMAL1 = shtMAL.getRange('B' + row + ':F' + row);
-  const contentRRangeMAL2 = shtMAL.getRange('H' + row + ':M' + row);
-  const contentRRangeMAL3 = shtMAL.getRange('O' + row + ':AB' + row);
-  
-  contentRRangeMAL1.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL]]);
-  contentRRangeMAL2.setValues([[type,source,studios,premiered,releaseDateBegin,releaseDateEnd]]);
-  contentRRangeMAL3.setValues([[epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,progress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
+  const formulaImage = '=IMAGE(F' + row + ', 3)'
+  const formulaReleaseDate = '=TEXTJOIN("  -  ", true, L' + row + ',M' + row +')'
+  const formulaProgress = '=IF(REGEXMATCH(U' + row + ',"^Complete"), "✅", IF(U' + row + '="Watch Later", "🔄", IF(U' + row + '="Watching","🟣", IF(U' + row + '="Drop", "❌", ""))))';
+
+  const contentRRangeMAL = shtMAL.getRange('B' + row + ':AB' + row);
+  contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,formulaProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
 
   const rangeSorting = shtMAL.getRange('B3:AB' + row);
   rangeSorting.sort({column: 2, ascending: true});
@@ -49,62 +48,29 @@ function saveAnime() {
   clearMAL();
 };
 
-
-function saveAnimeEfficiently() {
-  const rawData = shtInputMAL.getRange('E5:E53').getValues();
-  
-  const contentRRangeMAL1 = shtMAL.getRange('B' + row + ':F' + row);
-  const contentRRangeMAL2 = shtMAL.getRange('H' + row + ':M' + row);
-  const contentRRangeMAL3 = shtMAL.getRange('O' + row + ':AB' + row);
-
-  contentRRangeMAL1.setValues([[rawData[0][0],rawData[2][0],rawData[4][0],rawData[6][0],rawData[8][0]]]);
-  contentRRangeMAL2.setValues([[rawData[10][0],rawData[12][0],rawData[14][0],rawData[16][0],rawData[18][0],rawData[20][0]]]);
-  contentRRangeMAL3.setValues([[rawData[22][0],rawData[24][0],rawData[26][0],rawData[28][0],rawData[30][0],rawData[32][0],rawData[34][0],rawData[36][0],rawData[38][0],rawData[40][0],rawData[42][0],rawData[44][0],rawData[46][0],rawData[48][0]]]);
-
-  shtMAL.getRange('B3:AB' + row).sort({column: 2, ascending: true});
-
-  clearMALEfficiently();
-};
-
 // =================================================================================================================================================
 
 function clearMAL() {
   let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53'];
   shtInputMAL.getRangeList(cellsToClear).clearContent();
-  // shtInputMAL.getRange('E29').setValue('23 min per ep');
-};
-
-
-function clearMALEfficiently() {
-  shtInputMAL.getRangeList(['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53']).clearContent();
 };
 
 // =================================================================================================================================================
 
 function searchAnimeInfo() {
   
-  // 1. Ambil Judul dari E5
   const query = shtInputMAL.getRange('E5').getValue();
   
-  // Error Handling jika belum memasukkan judul anime
   if (query === "") {
     Browser.msgBox("Silakan masukkan Judul Anime terlebih dahulu.");
     return;
   }
 
-  // 2. Siapkan URL untuk request ke Jikan API
-  // encodeURIComponent memastikan judul yang ada spasi/simbol aman untuk URL
   const url = 'https://api.jikan.moe/v4/anime?q=' + encodeURIComponent(query) + '&limit=1';
 
   try {
-    // 3. Panggil API (Fetch)
-
-    // const response = UrlFetchApp.fetch(url);
-    // const json = JSON.parse(response.getContentText());
-
     const json = JSON.parse(UrlFetchApp.fetch(url).getContentText());
 
-    // Cek apakah ada hasil
     if (!json.data || json.data.length === 0) {
       Browser.msgBox("Anime tidak ditemukan!");
       return;
@@ -127,9 +93,10 @@ function searchAnimeInfo() {
     const genresList = anime.genres.map(g => g.name);
     const themesList = anime.themes.map(t => t.name);
     const genreAI = [...genresList, ...themesList].join(', ');
-    const demographicsAI = anime.demographics.map(d => d.name).join(', ') || "-";
     const ratingAI = anime.rating || "-";
     const scoreAI = anime.score || "-";
+    // const demographicsAI = anime.demographics.map(d => d.name).join(', ') || "-";
+    const demographicsAI = (anime.demographics && anime.demographics.length > 0) ? anime.demographics.map(d => d.name).join(', ') : "-";
 
     shtInputMAL.getRange('E7').setValue(animeTitleJapaneseAI);
     shtInputMAL.getRange('E9').setValue(animeTitleEnglishAI);
@@ -144,9 +111,19 @@ function searchAnimeInfo() {
     shtInputMAL.getRange('E27').setValue(epsCountAI);
     shtInputMAL.getRange('E29').setValue(durationPerEpisodeAI);
     shtInputMAL.getRange('E31').setValue(genreAI);
-    shtInputMAL.getRange('E33').setValue(demographicsAI);
     shtInputMAL.getRange('E35').setValue(ratingAI);
     shtInputMAL.getRange('E37').setValue(scoreAI);
+    // shtInputMAL.getRange('E33').setValue(demographicsAI);
+
+    if (demographicsAI && demographicsAI !== "-") {
+      try {
+         shtInputMAL.getRange('E33').setValue(demographicsAI);
+      } catch (e) {
+         shtInputMAL.getRange('E33').clearContent();
+      }
+    } else {
+      shtInputMAL.getRange('E33').clearContent();
+    }
     
     Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
 
