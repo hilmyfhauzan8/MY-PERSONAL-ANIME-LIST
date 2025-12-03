@@ -45,17 +45,16 @@ function saveAnime() {
   const rangeSorting = shtMAL.getRange('B3:AB' + row);
   rangeSorting.sort({column: 2, ascending: true});
 
-  const finder = shtMAL.getRange("B3:B" + row).createTextFinder(animeTitle).matchEntireCell(true);
-  const result = finder.findNext();
+  // const finder = shtMAL.getRange("B3:B" + row).createTextFinder(animeTitle).matchEntireCell(true);
+  // const result = finder.findNext();
+  // if (result) {shtMAL.setRowHeight(result.getRow(), 350)};
 
-  if (result) {shtMAL.setRowHeight(result.getRow(), 350)};
-
-  clearMAL();
+  clearInputMAL();
 };
 
 // =================================================================================================================================================
 
-function clearMAL() {
+function clearInputMAL() {
   let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53'];
   shtInputMAL.getRangeList(cellsToClear).clearContent();
 };
@@ -91,8 +90,14 @@ function searchAnimeInfo() {
     const studiosAI = anime.studios.map(s => s.name).join(', ') || "-";
     const premieredAI = (anime.season && anime.year) ? 
                       (anime.season.charAt(0).toUpperCase() + anime.season.slice(1) + " " + anime.year) : "-";
-    const releaseDateBeginAI = anime.aired.from ? new Date(anime.aired.from) : "";
-    const releaseDateEndAI = anime.aired.to ? new Date(anime.aired.to) : "";
+    let releaseDateBeginAI = "";
+    if (anime.aired.prop.from.day && anime.aired.prop.from.month && anime.aired.prop.from.year) {
+      releaseDateBeginAI = new Date(anime.aired.prop.from.year, anime.aired.prop.from.month - 1, anime.aired.prop.from.day + 1);
+    }
+    let releaseDateEndAI = "";
+    if (anime.aired.prop.to.day && anime.aired.prop.to.month && anime.aired.prop.to.year) {
+      releaseDateEndAI = new Date(anime.aired.prop.to.year, anime.aired.prop.to.month - 1, anime.aired.prop.to.day + 1);
+    }
     const epsCountAI = anime.episodes || "?";
     const durationPerEpisodeAI = anime.duration || "-";
     const genresList = anime.genres.map(g => g.name);
@@ -100,7 +105,6 @@ function searchAnimeInfo() {
     const genreAI = [...genresList, ...themesList].join(', ');
     const ratingAI = anime.rating || "-";
     const scoreAI = anime.score || "-";
-    // const demographicsAI = anime.demographics.map(d => d.name).join(', ') || "-";
     const demographicsAI = (anime.demographics && anime.demographics.length > 0) ? anime.demographics.map(d => d.name).join(', ') : "-";
 
     shtInputMAL.getRange('E7').setValue(animeTitleJapaneseAI);
@@ -118,7 +122,6 @@ function searchAnimeInfo() {
     shtInputMAL.getRange('E31').setValue(genreAI);
     shtInputMAL.getRange('E35').setValue(ratingAI);
     shtInputMAL.getRange('E37').setValue(scoreAI);
-    // shtInputMAL.getRange('E33').setValue(demographicsAI);
 
     if (demographicsAI && demographicsAI !== "-") {
       try {
