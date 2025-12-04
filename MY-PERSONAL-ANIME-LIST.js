@@ -7,31 +7,31 @@ function saveAnime() {
 
   const rawData = shtInputMAL.getRange('E5:E53').getValues();
 
-  const animeTitle = rawData[0][0]; //E5
-  const animeTitleJapanese = rawData[2][0]; //E7
-  const animeTitleEnglish = rawData[4][0]; //E9
-  const animeTitleSynonym = rawData[6][0]; //E11
-  const imageURL = rawData[8][0]; //E13
-  const type = rawData[10][0]; //E15
-  const source = rawData[12][0]; //E17
-  const studios = rawData[14][0]; //E19
-  const premiered = rawData[16][0]; //E21
-  const releaseDateBegin = rawData[18][0]; //E23
-  const releaseDateEnd = rawData[20][0]; //E25
-  const epsCount = rawData[22][0]; //E27
-  const durationPerEpisode = rawData[24][0]; //E29
-  const genre = rawData[26][0]; //E31
-  const demographic = rawData[28][0]; //E33
-  const rating = rawData[30][0]; //E35
-  const score = rawData[32][0]; //E37
-  const watchStatus = rawData[34][0]; //E39
-  const progress = rawData[36][0]; //E41
-  const personalScore = rawData[38][0]; //E43
-  const legalIllegal = rawData[40][0]; //E45
-  const platform = rawData[42][0]; //E47
-  const description = rawData[44][0]; //E49
-  const opensong = rawData[46][0]; //E51
-  const endsong = rawData[48][0]; //E53
+  const animeTitle = rawData[0][0];           //E5
+  const animeTitleJapanese = rawData[2][0];   //E7
+  const animeTitleEnglish = rawData[4][0];    //E9
+  const animeTitleSynonym = rawData[6][0];    //E11
+  const imageURL = rawData[8][0];             //E13
+  const type = rawData[10][0];                //E15
+  const source = rawData[12][0];              //E17
+  const studios = rawData[14][0];             //E19
+  const premiered = rawData[16][0];           //E21
+  const releaseDateBegin = rawData[18][0];    //E23
+  const releaseDateEnd = rawData[20][0];      //E25
+  const epsCount = rawData[22][0];            //E27
+  const durationPerEpisode = rawData[24][0];  //E29
+  const genre = rawData[26][0];               //E31
+  const demographic = rawData[28][0];         //E33
+  const rating = rawData[30][0];              //E35
+  const score = rawData[32][0];               //E37
+  const watchStatus = rawData[34][0];         //E39
+  const progress = rawData[36][0];            //E41
+  const personalScore = rawData[38][0];       //E43
+  const legalIllegal = rawData[40][0];        //E45
+  const platform = rawData[42][0];            //E47
+  const description = rawData[44][0];         //E49
+  const opensong = rawData[46][0];            //E51
+  const endsong = rawData[48][0];             //E53
   
   let row = shtMAL.getRange('AC3').getValue();
   row += 3;
@@ -104,38 +104,32 @@ function searchAnimeInfo() {
     const genresList = anime.genres.map(g => g.name);
     const themesList = anime.themes.map(t => t.name);
     const genreAI = [...genresList, ...themesList].join(', ');
+    const demographicsAI = (anime.demographics && anime.demographics.length > 0) ? anime.demographics.map(d => d.name).join(', ') : "";
     const ratingAI = anime.rating || "-";
     const scoreAI = anime.score || "-";
-    const demographicsAI = (anime.demographics && anime.demographics.length > 0) ? anime.demographics.map(d => d.name).join(', ') : "-";
 
-    shtInputMAL.getRange('E7').setValue(animeTitleJapaneseAI);
-    shtInputMAL.getRange('E9').setValue(animeTitleEnglishAI);
-    shtInputMAL.getRange('E11').setValue(animeTitleSynonymAI);
-    shtInputMAL.getRange('E13').setValue(imageURLAI);
-    shtInputMAL.getRange('E15').setValue(typeAI);
-    shtInputMAL.getRange('E17').setValue(sourceAI);
-    shtInputMAL.getRange('E19').setValue(studiosAI);
-    shtInputMAL.getRange('E21').setValue(premieredAI);
-    if (releaseDateBeginAI) {shtInputMAL.getRange('E23').setValue(releaseDateBeginAI);}
-    if (releaseDateEndAI) {shtInputMAL.getRange('E25').setValue(releaseDateEndAI);}
-    shtInputMAL.getRange('E27').setValue(epsCountAI);
-    shtInputMAL.getRange('E29').setValue(durationPerEpisodeAI);
-    shtInputMAL.getRange('E31').setValue(genreAI);
-    shtInputMAL.getRange('E35').setValue(ratingAI);
-    shtInputMAL.getRange('E37').setValue(scoreAI);
+    const targetRange = shtInputMAL.getRange('E7:E37');
+    let values = targetRange.getValues();
 
-    if (demographicsAI && demographicsAI !== "-") {
-      try {
-         shtInputMAL.getRange('E33').setValue(demographicsAI);
-      } catch (e) {
-         shtInputMAL.getRange('E33').clearContent();
-      }
-    } else {
-      shtInputMAL.getRange('E33').clearContent();
-    }
+    values[0][0] = animeTitleJapaneseAI;                          // E7
+    values[2][0]  = animeTitleEnglishAI;                          // E9
+    values[4][0]  = animeTitleSynonymAI;                          // E11
+    values[6][0]  = imageURLAI;                                   // E13
+    values[8][0]  = typeAI;                                       // E15
+    values[10][0] = sourceAI;                                     // E17
+    values[12][0] = studiosAI;                                    // E19
+    values[14][0] = premieredAI;                                  // E21
+    values[16][0] = releaseDateBeginAI ? releaseDateBeginAI : ""; // E23
+    values[18][0] = releaseDateEndAI ? releaseDateEndAI : "";     // E25
+    values[20][0] = epsCountAI;                                   // E27
+    values[22][0] = durationPerEpisodeAI;                         // E29
+    values[24][0] = genreAI;                                      // E31
+    values[26][0] = demographicsAI;                               // E33
+    values[28][0] = ratingAI;                                     // E35
+    values[30][0] = scoreAI;                                      // E37
+
+    targetRange.setValues(values)
     
-    // Browser.msgBox("Data Anime berhasil ditemukan dan diisi!");
-
   } catch (error) {
     Browser.msgBox("Error mengambil data: " + error.toString());
   }
