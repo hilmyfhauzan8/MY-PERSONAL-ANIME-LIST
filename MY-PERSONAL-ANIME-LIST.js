@@ -1,4 +1,3 @@
-// HELLO WORLD
 
 const Sheet = SpreadsheetApp.getActiveSpreadsheet();
 const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
@@ -26,7 +25,7 @@ function saveAnime() {
   const rating = rawData[30][0]; //E35
   const score = rawData[32][0]; //E37
   const watchStatus = rawData[34][0]; //E39
-  // const progress = rawData[36][0]; //E41
+  const progress = rawData[36][0]; //E41
   const personalScore = rawData[38][0]; //E43
   const legalIllegal = rawData[40][0]; //E45
   const platform = rawData[42][0]; //E47
@@ -40,9 +39,9 @@ function saveAnime() {
   const formulaImage = '=IMAGE(F' + row + ', 3)'
   const formulaReleaseDate = '=TEXTJOIN("  -  ", true, L' + row + ',M' + row +')'
   const formulaProgress = '=IF(REGEXMATCH(U' + row + ',"^Complete"), "✅", IF(U' + row + '="Watch Later", "🔄", IF(U' + row + '="Watching","🟣", IF(U' + row + '="Drop", "❌", ""))))';
-
+  const finalProgress = (progress === "") ? formulaProgress : progress;
   const contentRRangeMAL = shtMAL.getRange('B' + row + ':AB' + row);
-  contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,formulaProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
+  contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,epsCount,durationPerEpisode,genre,demographic,rating,score,watchStatus,finalProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
   
   const rangeSorting = shtMAL.getRange('B3:AB' + row);
   rangeSorting.sort({column: 2, ascending: true});
