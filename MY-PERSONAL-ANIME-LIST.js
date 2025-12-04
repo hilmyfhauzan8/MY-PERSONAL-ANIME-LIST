@@ -1,3 +1,5 @@
+// HELLO WORLD
+
 const Sheet = SpreadsheetApp.getActiveSpreadsheet();
 const shtInputMAL = Sheet.getSheetByName('Input MY ANIME LIST');
 const shtMAL = Sheet.getSheetByName('MY ANIME LIST');
