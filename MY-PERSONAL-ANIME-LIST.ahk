@@ -75,6 +75,10 @@ Send, {Blind}{Right}{Right}{Right}{Right} ; Watch Status - Legal/Illegal
 
 Send, {Blind}{Right}{Right}{Right}{Right}{Shift Up} ; Platform - Ending Song
 
+  Sleep, % 200 //playspeed
+
+Send, {Blind}{Del}
+
   Sleep, % 100 //playspeed
 
 }
