@@ -34,18 +34,19 @@ function saveAnime() {
   const opensong = rawData[48][0];            //E53
   const endsong = rawData[50][0];             //E55
   
-  let row = shtMPAL.getRange('AD3').getValue();
-  row += 3;
+  const lastRowWithData = shtMPAL.getRange("B" + shtMPAL.getMaxRows()).getNextDataCell(SpreadsheetApp.Direction.UP).getRow();
+  let targetRow = lastRowWithData + 1;
+  if (targetRow < 3) targetRow = 3;
 
-  const formulaImage = '=IMAGE(F' + row + ', 3)'
-  const formulaReleaseDate = '=TEXTJOIN("  -  ", true, L' + row + ',M' + row +')'
-  const formulaProgress = '=IF(REGEXMATCH(V' + row + ',"^Complete"), "✅", IF(V' + row + '="Watch Later", "🔄", IF(V' + row + '="Watching","🟣", IF(V' + row + '="Drop", "❌", ""))))';
+  const formulaImage = '=IMAGE(F' + targetRow + ', 3)'
+  const formulaReleaseDate = '=TEXTJOIN("  -  ", true, L' + targetRow + ',M' + targetRow +')'
+  const formulaProgress = '=IF(REGEXMATCH(V' + targetRow + ',"^Complete"), "✅", IF(V' + targetRow + '="Watch Later", "🔄", IF(V' + targetRow + '="Watching","🟣", IF(V' + targetRow + '="Drop", "❌", ""))))';
   const finalProgress = (progress === "") ? formulaProgress : progress;
 
-  const contentRRangeMAL = shtMPAL.getRange('B' + row + ':AC' + row);
+  const contentRRangeMAL = shtMPAL.getRange('B' + targetRow + ':AC' + targetRow);
   contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,episodeCount,durationPerEpisode,genres,themes,demographics,rating,score,watchStatus,finalProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
   
-  const rangeSorting = shtMPAL.getRange('B3:AC' + row);
+  const rangeSorting = shtMPAL.getRange('B3:AC' + targetRow);
   rangeSorting.sort({column: 2, ascending: true});
 
   // const finder = shtMAL.getRange("B3:B" + row).createTextFinder(animeTitle).matchEntireCell(true);
