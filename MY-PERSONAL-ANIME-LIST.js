@@ -1,11 +1,11 @@
 
 const Sheet = SpreadsheetApp.getActiveSpreadsheet();
-const shtInputMAL = Sheet.getSheetByName('Input MY PERSONAL ANIME LIST');
-const shtMAL = Sheet.getSheetByName('MY PERSONAL ANIME LIST');
+const shtInputMPAL = Sheet.getSheetByName('Input MY PERSONAL ANIME LIST');
+const shtMPAL = Sheet.getSheetByName('MY PERSONAL ANIME LIST');
 
 function saveAnime() {
 
-  const rawData = shtInputMAL.getRange('E5:E55').getValues();
+  const rawData = shtInputMPAL.getRange('E5:E55').getValues();
 
   const animeTitle = rawData[0][0];           //E5
   const animeTitleJapanese = rawData[2][0];   //E7
@@ -34,7 +34,7 @@ function saveAnime() {
   const opensong = rawData[48][0];            //E53
   const endsong = rawData[50][0];             //E55
   
-  let row = shtMAL.getRange('AD3').getValue();
+  let row = shtMPAL.getRange('AD3').getValue();
   row += 3;
 
   const formulaImage = '=IMAGE(F' + row + ', 3)'
@@ -42,10 +42,10 @@ function saveAnime() {
   const formulaProgress = '=IF(REGEXMATCH(V' + row + ',"^Complete"), "✅", IF(V' + row + '="Watch Later", "🔄", IF(V' + row + '="Watching","🟣", IF(V' + row + '="Drop", "❌", ""))))';
   const finalProgress = (progress === "") ? formulaProgress : progress;
 
-  const contentRRangeMAL = shtMAL.getRange('B' + row + ':AC' + row);
+  const contentRRangeMAL = shtMPAL.getRange('B' + row + ':AC' + row);
   contentRRangeMAL.setValues([[animeTitle,animeTitleJapanese,animeTitleEnglish,animeTitleSynonym,imageURL,formulaImage,type,source,studios,premiered,releaseDateBegin,releaseDateEnd,formulaReleaseDate,episodeCount,durationPerEpisode,genres,themes,demographics,rating,score,watchStatus,finalProgress,personalScore,legalIllegal,platform,description,opensong,endsong]]);
   
-  const rangeSorting = shtMAL.getRange('B3:AC' + row);
+  const rangeSorting = shtMPAL.getRange('B3:AC' + row);
   rangeSorting.sort({column: 2, ascending: true});
 
   // const finder = shtMAL.getRange("B3:B" + row).createTextFinder(animeTitle).matchEntireCell(true);
@@ -59,14 +59,14 @@ function saveAnime() {
 
 function clearInputMAL() {
   let cellsToClear = ['E5', 'E7', 'E9', 'E11', 'E13', 'E15', 'E17', 'E19', 'E21', 'E23', 'E25', 'E27', 'E29', 'E31', 'E33', 'E35', 'E37', 'E39', 'E41', 'E43', 'E45', 'E47', 'E49', 'E51', 'E53', 'E55'];
-  shtInputMAL.getRangeList(cellsToClear).clearContent();
+  shtInputMPAL.getRangeList(cellsToClear).clearContent();
 };
 
 // =================================================================================================================================================
 
 function searchAnimeInfo() {
   
-  const query = shtInputMAL.getRange('E5').getValue();
+  const query = shtInputMPAL.getRange('E5').getValue();
   
   if (query === "") {
     Browser.msgBox("Silakan masukkan Judul Anime terlebih dahulu.");
@@ -109,7 +109,7 @@ function searchAnimeInfo() {
     const ratingAI = anime.rating || "-";
     const scoreAI = anime.score || "-";
 
-    const targetRange = shtInputMAL.getRange('E7:E39');
+    const targetRange = shtInputMPAL.getRange('E7:E39');
     let values = targetRange.getValues();
 
     values[0][0] = animeTitleJapaneseAI;                          // E7
